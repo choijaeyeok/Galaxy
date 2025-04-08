@@ -1,15 +1,28 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.ParticleSystem;
 
 public class PlayerWeapon : MonoBehaviour
 {
-    [SerializeField] GameObject laser;
-
+    [SerializeField] GameObject[] lasers;//GameObject[]는 GameObject 타입의 여러 개 데이터를 한꺼번에 저장할 수 있는 그릇
+                                         //Inspector에서 레이저 오브젝트들을 배열로 설정할 수 있게 해줌
+                                         //foreach (GameObject laser in lasers)가 [SerializeField] GameObject[] lasers에서 왼쪽 오른쪽 레이저를 가져옴
+    
+    [SerializeField] RectTransform crosshair;// RectTransform는 Canvas 아래 UI 요소들에 사용 UI는 사용자가 게임/앱과 상호작용할 수 있도록 도와주는 모든 시각적 요소
+    [SerializeField] Transform targetPoint;
+    [SerializeField] float targetDistance = 100f;
+    
     bool isFiring = false;
 
-    private void Update()
+    void Start()
+    {
+        Cursor.visible = false;
+    }
+    private void Update()// 매 프레임 실행됨
     {
         ProcessFiring();
+        MoveCrosshair();
+        MoveTargetPoint();
     }
 
     public void OnFire(InputValue value) //nput System의 "Fire" 액션이 실행될 때 자동으로 호출
@@ -22,14 +35,29 @@ public class PlayerWeapon : MonoBehaviour
     }
     void ProcessFiring()
     {
-        var emmissionModule = laser.GetComponent<ParticleSystem>().emission; // var은 변수의 타입을 자동으로 결정해 주는 키워드
+        foreach (GameObject laser in lasers)//foreach 루프는 모든 레이저 오브젝트를 한 번에 처리
+                                            //lasers 배열에 있는(Left, Right Laser)모든 레이저 오브젝트를 laser라는 변수로 하나씩 꺼냄
+                                            //foreach (GameObject laser in lasers)rk 실행되면 Left, Right Laser에  var emmissionModule = laser.GetComponent<ParticleSystem>().emission;
+                                            //emmissionModule.enabled = isFiring; 이게 실행됨
+        {
+
+            var emmissionModule = laser.GetComponent<ParticleSystem>().emission; // var은 변수의 타입을 자동으로 결정해 주는 키워드
                                                                              // Laser 오브젝트에서 ParticleSystem 컴포넌트를 가져옴 -> emission 가져옴(emission는 입자 방출 모듈)
 
         emmissionModule.enabled = isFiring;//isFiring 값에 따라 레이저 발사 ON/OFF 예시) isFiring == true → emmissionModule.enabled = true → 총알 발사
     
-}
-    
+        }
 
+}
+    void MoveCrosshair()
+    {
+        crosshair.position = Input.mousePosition;
+    }
+    void MoveTargetPoint()
+    {
+        Vector3 targetPointPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, targetDistance);
+        targetPoint.position = Camera.main.ScreenToWorldPoint(targetPointPosition);
+    }
 }
 
 
