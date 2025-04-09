@@ -769,7 +769,7 @@ MonoBehaviour:
   - {fileID: 173674711}
   crosshair: {fileID: 1269724926}
   targetPoint: {fileID: 1178045118}
-  targetDistance: 100
+  targetDistance: 250
 --- !u!1 &975003963
 GameObject:
   m_ObjectHideFlags: 0
