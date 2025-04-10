@@ -67,9 +67,11 @@ public class PlayerWeapon : MonoBehaviour
                     //targetPoint라는 오브젝트가 마우스를 따라가니깐 마우스를 향해서 레이저오브젝트 회전이 바뀌는것
     {
         foreach (GameObject laser in lasers)
-        { Vector3 fireDirection = targetPoint.position - laser.transform.position;//목표 지점 - 내 위치 = 가야 할 방향, fireDirection = 목표 방향을 가리키는 벡터
+        { Vector3 fireDirection = targetPoint.position - this.transform.position;//목표 지점 - 내 위치 = 가야 할 방향, fireDirection = 목표 방향을 가리키는 벡터 ,
+                                                                                                                                       //   레이저마다 개별적으로 조준하게 하려면 → laser.transform.position
+                                                                                                                                         //  this.transform.position 는 레이저의 위치가 이 스크립트가 붙어 있는 오브젝트와 같으면 써도 되
             Quaternion rotationToTarget = Quaternion.LookRotation(fireDirection); // Unity는 회전을 다룰 때 Quaternion 사용함, Quaternion.LookRotation(...)는 "이 방향을 향하도록 회전 만들기"
-                                                                                  // 오브젝트를 저 방향(fireDirection)으로 보게 하고 싶어!" 라는 뜻
+                                                                                                                                                  // 오브젝트를 저 방향(fireDirection)으로 보게 하고 싶어!" 라는 뜻
             laser.transform.rotation = rotationToTarget; //레이저가 targetPoint를 향해서 정확히 조준하게 됨
 
         }
