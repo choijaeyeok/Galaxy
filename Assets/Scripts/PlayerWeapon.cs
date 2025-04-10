@@ -23,6 +23,7 @@ public class PlayerWeapon : MonoBehaviour
         ProcessFiring();
         MoveCrosshair();
         MoveTargetPoint();
+        AimLasers();
     }
 
     public void OnFire(InputValue value) //nput System의 "Fire" 액션이 실행될 때 자동으로 호출
@@ -53,12 +54,29 @@ public class PlayerWeapon : MonoBehaviour
     {
         crosshair.position = Input.mousePosition;
     }
-    void MoveTargetPoint()
+    void MoveTargetPoint()// 마우스가 가리키는 곳에 3D 오브젝트를 옮기는 함수 마우스가 가리키는 곳을 기준으로
+                          // 카메라에서 일정 거리만큼 앞쪽에 targetPoint 오브젝트를 따라가게 만드는 함수
     {
-        Vector3 targetPointPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, targetDistance);
-        targetPoint.position = Camera.main.ScreenToWorldPoint(targetPointPosition);
+        Vector3 targetPointPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, targetDistance);//마우스 위치(x, y)에 targetDistance라는 z값(깊이)을 더해서 3D 위치
+        targetPoint.position = Camera.main.ScreenToWorldPoint(targetPointPosition); // Input.mousePosition은 화면 좌표, camera.main는 현재 씬(Scene)에서 Main Camera를 가져오는 코드
+                                                                                    // ScreenToWorldPoint()는 2D 화면 좌표(mousePosition)를 3D 게임 좌표로 바꾸기 위해서
+                                                                                    // 마우스 위치 → 게임 위치로 변환해서 → 오브젝트를 그곳에 놓기
+    }
+    void AimLasers()//각 레이저 오브젝트를 targetPoint를 향해서 회전시키는 함수
+                    //모든 레이저 오브젝트를 targetPoint를 향해 회전시켜주는 역할을 함. 즉, 총구가 타겟을 향하게 만드는 코드
+                    //targetPoint라는 오브젝트가 마우스를 따라가니깐 마우스를 향해서 레이저오브젝트 회전이 바뀌는것
+    {
+        foreach (GameObject laser in lasers)
+        { Vector3 fireDirection = targetPoint.position - laser.transform.position;//목표 지점 - 내 위치 = 가야 할 방향, fireDirection = 목표 방향을 가리키는 벡터
+            Quaternion rotationToTarget = Quaternion.LookRotation(fireDirection); // Unity는 회전을 다룰 때 Quaternion 사용함, Quaternion.LookRotation(...)는 "이 방향을 향하도록 회전 만들기"
+                                                                                  // 오브젝트를 저 방향(fireDirection)으로 보게 하고 싶어!" 라는 뜻
+            laser.transform.rotation = rotationToTarget; //레이저가 targetPoint를 향해서 정확히 조준하게 됨
+
+        }
     }
 }
+
+
 
 
 
