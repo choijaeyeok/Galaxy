@@ -1864,8 +1864,7 @@ MonoBehaviour:
   m_Children: []
   m_Clips: []
   m_Markers:
-    m_Objects:
-    - {fileID: 5807695515041930887}
+    m_Objects: []
 --- !u!114 &2282900129492879314
 MonoBehaviour:
   m_ObjectHideFlags: 1
